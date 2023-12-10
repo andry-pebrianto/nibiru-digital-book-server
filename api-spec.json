@@ -1,0 +1,84 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Cari Buku API Documentation",
+    "description": "OpenAPI which contains complete documentation about all endpoints that can be used in this RESTful API.",
+    "contact": {
+      "name": "Andry Pebrianto",
+      "url": "https://andrypebrianto.netlify.app",
+      "email": "andryforwork227@gmail.com"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://opensource.org/license/mit"
+    },
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5111/api/v1",
+      "description": "Development API v1"
+    }
+  ],
+  "paths": {},
+  "components": {
+    "schemas": {
+      "Success": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "SuccessWithToken": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "Failure": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer Token": {
+        "description": "Token To Authorized Private Endpoint",
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

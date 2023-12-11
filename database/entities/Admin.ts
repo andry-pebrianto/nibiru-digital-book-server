@@ -6,8 +6,8 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-@Entity("users")
-export class User {
+@Entity("admins")
+export class Admin {
   @PrimaryColumn({ type: "uuid" })
     id!: string;
 
@@ -17,17 +17,11 @@ export class User {
   @Column({ length: 50 })
     email!: string;
 
-  @Column({ type: "text", nullable: true })
-    google_id!: string;
-
   @Column({ type: "text" })
-    profile_picture!: string;
+    password!: string;
 
-  @Column({ length: 250, nullable: true })
-    bio!: string;
-
-  @Column({ default: 2 })
-    role!: boolean;
+  @Column()
+    role!: number;
 
   @CreateDateColumn({ type: "timestamp with time zone" })
     created_at!: Date;

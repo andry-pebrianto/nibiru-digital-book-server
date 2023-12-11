@@ -7,6 +7,7 @@ This is a Restful API repository for Cari Buku. This Restful API is built using 
 ### Technology Used
 
 - [Express](https://expressjs.com/)
+- [TypeScript](https://www.typescriptlang.org/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [TypeORM](https://typeorm.io/)
 - [JWT](https://jwt.io/)
@@ -16,6 +17,7 @@ This is a Restful API repository for Cari Buku. This Restful API is built using 
 - [Google APIs](https://github.com/googleapis/google-api-nodejs-client)
 - [Google Auth Library](https://www.npmjs.com/package/google-auth-library)
 - [Nodemailer](https://nodemailer.com/about/)
+- [Winston](https://www.npmjs.com/package/winston)
 
 ## Getting Started
 

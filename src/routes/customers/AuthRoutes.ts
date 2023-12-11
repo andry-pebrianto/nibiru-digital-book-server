@@ -1,11 +1,9 @@
 import { Router } from "express";
 import { jwtAuth } from "../../middlewares/jwtAuth";
-import AuthServices from "../../services/customers/AuthServices";
-
-const authServices = new AuthServices();
+import AuthControllers from "../../controllers/customers/AuthControllers";
 
 const AuthRoutes = Router();
-AuthRoutes.post("/google-auth", authServices.googleAuth);
-AuthRoutes.get("/check", jwtAuth, authServices.check);
+AuthRoutes.post("/google-auth", AuthControllers.googleAuth);
+AuthRoutes.get("/check", jwtAuth, AuthControllers.check);
 
 export default AuthRoutes;

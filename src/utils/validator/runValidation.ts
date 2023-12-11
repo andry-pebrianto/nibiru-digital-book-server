@@ -6,7 +6,7 @@ const runValidation = (
   req: Request,
   res: Response,
   schema: Joi.ObjectSchema
-): Response | void => {
+): Response | "VALID" => {
   try {
     const { error } = schema.validate(req.body);
     if (error) {
@@ -17,6 +17,8 @@ const runValidation = (
         error: error.details[0].message,
       });
     }
+
+    return "VALID";
   } catch (error) {
     return handleError(res, error);
   }

@@ -13,7 +13,7 @@ import NotFoundError from "../../utils/exception/custom/NotFoundError";
 import BadRequestError from "../../utils/exception/custom/BadRequestError";
 import Env from "../../utils/variables/Env";
 
-export default class AuthServices {
+export default new (class AuthServices {
   private readonly customerRepository: Repository<Customer> =
     PostgreDataSource.getRepository(Customer);
 
@@ -104,4 +104,4 @@ export default class AuthServices {
       return handleError(res, error);
     }
   }
-}
+})();

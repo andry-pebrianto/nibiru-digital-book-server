@@ -6,8 +6,11 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import { Admin } from "./Admin";
+import { Customer } from "./Customer";
 
 @Entity("books")
 export class Book {
@@ -35,6 +38,20 @@ export class Book {
   })
   @JoinColumn({ name: "admin_id" }) // untuk membuat foreignkey
     admin!: Admin;
+
+  @ManyToMany(() => Customer, (customer) => customer.books_who_saved, { cascade: true })
+  @JoinTable({
+    name: "carts",
+    joinColumn: {
+      name: "book_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "customer_id",
+      referencedColumnName: "id",
+    },
+  })
+    customers_who_saving!: Customer[];
 
   @CreateDateColumn({ type: "timestamp with time zone" })
     created_at!: Date;

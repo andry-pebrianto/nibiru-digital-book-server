@@ -4,7 +4,9 @@ import {
   PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
 } from "typeorm";
+import { Book } from "./Book";
 
 @Entity("customers")
 export class Customer {
@@ -22,6 +24,9 @@ export class Customer {
 
   @Column({ type: "text" })
     profile_picture!: string;
+
+  @ManyToMany(() => Book, (book) => book.customers_who_saving)
+    books_who_saved!: Book[];
 
   @CreateDateColumn({ type: "timestamp with time zone" })
     created_at!: Date;

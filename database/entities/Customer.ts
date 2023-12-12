@@ -5,8 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
+  OneToMany,
 } from "typeorm";
 import { Book } from "./Book";
+import { Transaction } from "./Transaction";
 
 @Entity("customers")
 export class Customer {
@@ -27,6 +29,9 @@ export class Customer {
 
   @ManyToMany(() => Book, (book) => book.customers_who_saving)
     books_who_saved!: Book[];
+
+  @OneToMany(() => Transaction, (transaction) => transaction.customer)
+    transactions!: Transaction[];
 
   @CreateDateColumn({ type: "timestamp with time zone" })
     created_at!: Date;

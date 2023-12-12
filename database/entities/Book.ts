@@ -8,9 +8,11 @@ import {
   JoinColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from "typeorm";
 import { Admin } from "./Admin";
 import { Customer } from "./Customer";
+import { Transaction } from "./Transaction";
 
 @Entity("books")
 export class Book {
@@ -52,6 +54,9 @@ export class Book {
     },
   })
     customers_who_saving!: Customer[];
+
+  @OneToMany(() => Transaction, (transaction) => transaction.book)
+    transactions!: Transaction[];
 
   @CreateDateColumn({ type: "timestamp with time zone" })
     created_at!: Date;

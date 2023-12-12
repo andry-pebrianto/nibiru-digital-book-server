@@ -22,9 +22,6 @@ export class Admin {
   @Column({ type: "text" })
     password!: string;
 
-  @Column()
-    role!: number;
-
   @OneToMany(() => Book, (book) => book.admin)
     books!: Book[];
 

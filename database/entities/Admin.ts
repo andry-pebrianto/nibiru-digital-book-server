@@ -4,7 +4,9 @@ import {
   PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
+import { Book } from "./Book";
 
 @Entity("admins")
 export class Admin {
@@ -22,6 +24,9 @@ export class Admin {
 
   @Column()
     role!: number;
+
+  @OneToMany(() => Book, (book) => book.admin)
+    books!: Book[];
 
   @CreateDateColumn({ type: "timestamp with time zone" })
     created_at!: Date;

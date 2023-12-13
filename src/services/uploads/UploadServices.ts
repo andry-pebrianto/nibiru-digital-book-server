@@ -10,12 +10,20 @@ import BadRequestError from "../../utils/exception/custom/BadRequestError";
 export default new (class UploadServices {
   async uploadToCloudinary(req: Request, res: Response): Promise<Response> {
     try {
-      let image: UploadApiResponse | undefined = undefined;
+      const images: string[] = [];
 
       if ((req as any).files) {
         if ((req as any).files.image) {
-          image = await uploadToCloudinary((req as any).files.image[0]);
-          deleteFile((req as any).files.image[0].path);
+          for (let i = 0; i < (req as any).files?.image.length; i++) {
+            const res: UploadApiResponse | undefined = await uploadToCloudinary(
+              (req as any).files.image[i]
+            );
+
+            if (res) {
+              images.push(res?.secure_url);
+            }
+            deleteFile((req as any).files.image[i].path);
+          }
         } else {
           throw new BadRequestError(
             `The fieldname "image" does not have a file object.`,
@@ -34,7 +42,7 @@ export default new (class UploadServices {
         status: "success",
         message: "Upload Image Success",
         data: {
-          url: image?.secure_url,
+          images,
         },
       });
     } catch (error) {

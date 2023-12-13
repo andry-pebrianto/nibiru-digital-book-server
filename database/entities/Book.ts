@@ -13,7 +13,6 @@ import {
 import { Admin } from "./Admin";
 import { Customer } from "./Customer";
 import { Transaction } from "./Transaction";
-import { BookPhoto } from "./BookPhoto";
 
 @Entity("books")
 export class Book {
@@ -26,8 +25,8 @@ export class Book {
   @Column({ length: 100 })
     author!: string;
 
-  @Column({ type: "text" })
-    cover_picture!: string;
+  @Column({ type: "text", array: true })
+    photos!: string[];
 
   @Column({ length: 1000 })
     synopsis!: string;
@@ -55,9 +54,6 @@ export class Book {
     },
   })
     customers_who_saving!: Customer[];
-
-  @OneToMany(() => BookPhoto, (book_photo) => book_photo.book)
-    photos!: Transaction[];
 
   @OneToMany(() => Transaction, (transaction) => transaction.book)
     transactions!: Transaction[];

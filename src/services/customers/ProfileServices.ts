@@ -6,7 +6,7 @@ import { Customer } from "../../../database/entities/Customer";
 import handleError from "../../utils/exception/handleError";
 import NotFoundError from "../../utils/exception/custom/NotFoundError";
 
-export default new (class UserServices {
+export default new (class ProfileServices {
   private readonly customerRepository: Repository<Customer> =
     PostgreDataSource.getRepository(Customer);
 

@@ -45,7 +45,7 @@ export function uploadImage(req: Request, res: Response, next: NextFunction) {
   const multerFields = multerUpload.fields([
     {
       name: "image",
-      maxCount: 1,
+      maxCount: 5,
     },
   ]);
 
@@ -65,7 +65,7 @@ export function uploadImage(req: Request, res: Response, next: NextFunction) {
         return handleError(
           res,
           new BadRequestError(
-            `Unexpected field (${err.field}).`,
+            `Too many uploaded file (${err.field}), exceeding the maximum limit of 5 files.`,
             "LIMIT UNEXPECTED FILE"
           )
         );

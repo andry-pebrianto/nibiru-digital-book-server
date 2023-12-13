@@ -4,7 +4,6 @@ import Env from "../src/utils/variables/Env";
 import { Customer } from "./entities/Customer";
 import { Admin } from "./entities/Admin";
 import { Book } from "./entities/Book";
-import { BookPhoto } from "./entities/BookPhoto";
 import { Transaction } from "./entities/Transaction";
 
 export const PostgreDataSource = new DataSource({
@@ -16,7 +15,7 @@ export const PostgreDataSource = new DataSource({
   database: Env.DB_NAME,
   synchronize: Env.NODE_ENV === "prod" ? false : true,
   logging: Env.NODE_ENV === "prod" ? false : true,
-  entities: [Customer, Admin, Book, BookPhoto, Transaction],
+  entities: [Customer, Admin, Book, Transaction],
   migrations: [],
   subscribers: [],
   ssl: Env.NODE_ENV === "prod" ? true : false,

@@ -55,6 +55,20 @@ export class Book {
   })
     customers_who_saving!: Customer[];
 
+  @ManyToMany(() => Customer, (customer) => customer.books_who_buyed, { cascade: true })
+  @JoinTable({
+    name: "collections",
+    joinColumn: {
+      name: "book_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "customer_id",
+      referencedColumnName: "id",
+    },
+  })
+    customers_who_buying!: Customer[];
+
   @OneToMany(() => Transaction, (transaction) => transaction.book)
     transactions!: Transaction[];
 

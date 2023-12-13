@@ -30,6 +30,9 @@ export class Customer {
   @ManyToMany(() => Book, (book) => book.customers_who_saving)
     books_who_saved!: Book[];
 
+  @ManyToMany(() => Book, (book) => book.customers_who_buying)
+    books_who_buyed!: Book[];
+
   @OneToMany(() => Transaction, (transaction) => transaction.customer)
     transactions!: Transaction[];
 

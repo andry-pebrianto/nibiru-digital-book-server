@@ -14,4 +14,13 @@ export default new (class BookControllers {
       BookServices.editBook(req, res);
     }
   }
+  findAllBook(req: Request, res: Response) {
+    BookServices.findAllBook(req, res);
+  }
+  findOneBook(req: Request, res: Response) {
+    BookServices.findOneBook(req, res);
+  }
+  deleteBook(req: Request, res: Response) {
+    BookServices.editBook(req, res);
+  }
 })();

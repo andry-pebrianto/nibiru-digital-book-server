@@ -162,13 +162,13 @@ export default new (class BookServices {
     try {
       const book: Book | null = await this.bookRepository.findOne({
         where: {
-          id: req.params.id,
+          id: req.params.bookId,
         },
       });
 
       if (!book) {
         throw new NotFoundError(
-          `Book with ID ${req.params.id} not found`,
+          `Book with ID ${req.params.bookId} not found`,
           "Book Not Found"
         );
       }

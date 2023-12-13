@@ -21,6 +21,6 @@ export default new (class BookControllers {
     BookServices.findOneBook(req, res);
   }
   deleteBook(req: Request, res: Response) {
-    BookServices.editBook(req, res);
+    BookServices.deleteBook(req, res);
   }
 })();

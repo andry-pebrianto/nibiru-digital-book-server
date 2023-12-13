@@ -4,7 +4,7 @@ import runValidation from "../../utils/validator/runValidation";
 import { adminLoginSchema } from "../../utils/validator/schema/authSchema";
 
 export default new (class AuthControllers {
-  googleAuth(req: Request, res: Response) {
+  login(req: Request, res: Response) {
     if (runValidation(req, res, adminLoginSchema) === "VALID") {
       AuthServices.login(req, res);
     }

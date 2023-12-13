@@ -8,7 +8,7 @@ import NotFoundError from "../utils/exception/custom/NotFoundError";
 import apiSpec from "../utils/swagger/apiSpec";
 import AuthCustomerRoutes from "../routes/customers/AuthRoutes";
 import CustomerRoutes from "../routes/customers/CustomerRoutes";
-import AuthAdminRoutes from "../routes/customers/AuthRoutes";
+import AuthAdminRoutes from "../routes/admins/AuthRoutes";
 import UploadRoutes from "../routes/uploads/UploadRoutes";
 
 const createServer: Express = express();

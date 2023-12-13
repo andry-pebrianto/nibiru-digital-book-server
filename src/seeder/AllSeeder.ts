@@ -16,8 +16,8 @@ export default new (class AllSeeder {
 
         const admin = new Admin();
         admin.id = uuidv4();
-        admin.fullname = "Cari Buku Admin";
-        admin.email = "admincaribuku@gmail.com";
+        admin.fullname = "Nibiru Digital Book Admin";
+        admin.email = "admin@nibirudigitalbook.com";
         admin.password = passwordHashed;
         await this.adminRepository.save(admin);
 

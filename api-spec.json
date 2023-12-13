@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.2",
   "info": {
-    "title": "Cari Buku API Documentation",
+    "title": "Nibiru Digital Book API Documentation",
     "description": "OpenAPI which contains complete documentation about all endpoints that can be used in this RESTful API.",
     "contact": {
       "name": "Andry Pebrianto",

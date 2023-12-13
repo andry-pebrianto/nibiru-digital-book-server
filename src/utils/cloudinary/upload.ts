@@ -11,7 +11,7 @@ export const uploadToCloudinary = (
   });
 
   return new Promise((resolve, reject) => {
-    const opt = { folder: "cari-buku" };
+    const opt = { folder: "nibiru-digital-book" };
 
     cloudinary.uploader.upload(file.path, opt, function (error, result) {
       if (error) {

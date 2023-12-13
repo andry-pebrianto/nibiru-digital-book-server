@@ -2,7 +2,7 @@
 
 ## About The Project
 
-This is a Restful API repository for Cari Buku. This Restful API is built using ExpressJS and PostgreSQL.
+This is a Restful API repository for Nibiru Digital Book. This Restful API is built using ExpressJS and PostgreSQL.
 
 ### Technology Used
 
@@ -23,7 +23,7 @@ This is a Restful API repository for Cari Buku. This Restful API is built using 
 
 ### Installation
 
-- Clone this project with `https://github.com/andry-pebrianto/cari-buku-server.git`
+- Clone this project with `https://github.com/andry-pebrianto/nibiru-digital-book-server.git`
 - Install package required with `yarn`
 - Setting .env
 

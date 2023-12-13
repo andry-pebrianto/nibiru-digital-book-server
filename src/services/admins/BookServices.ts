@@ -50,4 +50,38 @@ export default new (class BookServices {
       return handleError(res, error);
     }
   }
+
+  async editBook(req: Request, res: Response): Promise<Response> {
+    try {
+      const book: Book | null = await this.bookRepository.findOne({
+        where: {
+          id: req.params.id,
+        },
+      });
+
+      if (!book) {
+        throw new NotFoundError(
+          `Book with ID ${req.params.id} not found`,
+          "Book Not Found"
+        );
+      }
+
+      const { title, author, synopsis, photos, price } = req.body;
+      book.title = title;
+      book.author = author;
+      book.synopsis = synopsis;
+      book.photos = photos;
+      book.price = price;
+
+      await this.bookRepository.save(book);
+
+      return res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Update Book Success",
+      });
+    } catch (error) {
+      return handleError(res, error);
+    }
+  }
 })();

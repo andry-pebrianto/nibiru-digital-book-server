@@ -9,4 +9,9 @@ export default new (class BookControllers {
       BookServices.addBook(req, res);
     }
   }
+  editBook(req: Request, res: Response) {
+    if (runValidation(req, res, addBookSchema) === "VALID") {
+      BookServices.editBook(req, res);
+    }
+  }
 })();

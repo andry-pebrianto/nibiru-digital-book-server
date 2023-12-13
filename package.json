@@ -1,9 +1,9 @@
 {
-  "name": "cari-buku-server",
+  "name": "nibiru-digital-book-server",
   "version": "1.0.0",
-  "description": "API Service for Cari Buku.",
+  "description": "API Service for Nibiru Digital Book.",
   "main": "dist/src/app.js",
-  "repository": "https://github.com/andry-pebrianto/cari-buku-server.git",
+  "repository": "https://github.com/andry-pebrianto/nibiru-digital-book-server.git",
   "author": "Andry Pebrianto <andrypeb227@gmail.com>",
   "license": "MIT",
   "scripts": {

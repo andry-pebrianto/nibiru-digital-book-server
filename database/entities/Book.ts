@@ -28,7 +28,7 @@ export class Book {
   @Column({ type: "text", array: true })
     photos!: string[];
 
-  @Column({ length: 1000 })
+  @Column({ type: "text" })
     synopsis!: string;
 
   @Column()

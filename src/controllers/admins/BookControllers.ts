@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
 import BookServices from "../../services/admins/BookServices";
+import runValidation from "../../utils/validator/runValidation";
+import { addBookSchema } from "../../utils/validator/schema/bookSchema";
 
 export default new (class BookControllers {
   addBook(req: Request, res: Response) {
-    BookServices.addBook(req, res);
+    if (runValidation(req, res, addBookSchema) === "VALID") {
+      BookServices.addBook(req, res);
+    }
   }
 })();

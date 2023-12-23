@@ -13,13 +13,13 @@ export function jwtAuth(req: Request, res: Response, next: NextFunction) {
     }
 
     const token = authorizationHeader.split(" ")[1];
-    const auth = jwt.verify(token, Env.JWT_SECRET);
+    const auth = jwt.verify(token, Env.ACCESS_TOKEN_KEY);
     res.locals.auth = auth;
     next();
   } catch (error) {
     return handleError(
       res,
-      new UnauthorizedError("JWT Token Invalid", "Access Unauthorized")
+      new UnauthorizedError("Access Token Invalid", "Access Unauthorized")
     );
   }
 }

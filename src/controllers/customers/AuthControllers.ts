@@ -12,4 +12,10 @@ export default new (class AuthControllers {
   check(req: Request, res: Response) {
     AuthServices.check(req, res);
   }
+  refreshAccessToken(req: Request, res: Response) {
+    AuthServices.refreshAccessToken(req, res);
+  }
+  logout(req: Request, res: Response) {
+    AuthServices.logout(req, res);
+  }
 })();

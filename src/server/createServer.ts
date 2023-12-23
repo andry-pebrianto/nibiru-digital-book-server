@@ -25,10 +25,10 @@ createServer.get("/", (req: Request, res: Response): Response<string> => {
 
 createServer.use("/api/v1/api-docs", swaggerUi.serve, swaggerUi.setup(apiSpec));
 createServer.use("/api/v1/customer/auth", CustomerAuthRoutes);
-createServer.use("/api/v1/customer/profile", CustomerProfileRoutes);
-createServer.use("/api/v1/customer/book", CustomerBookRoutes);
-createServer.use("/api/v1/admin/auth", AdminAuthRoutes);
-createServer.use("/api/v1/admin/book", AdminBookRoutes);
+// createServer.use("/api/v1/customer/profile", CustomerProfileRoutes);
+// createServer.use("/api/v1/customer/book", CustomerBookRoutes);
+// createServer.use("/api/v1/admin/auth", AdminAuthRoutes);
+// createServer.use("/api/v1/admin/book", AdminBookRoutes);
 createServer.use("/api/v1/upload", UploadRoutes);
 
 createServer.use((req: Request, res: Response): Response<string> => {

@@ -6,16 +6,23 @@ import jwt from "jsonwebtoken";
 
 import { PostgreDataSource } from "../../../database/data-source";
 import { Customer } from "../../../database/entities/Customer";
+import { Authentication } from "../../../database/entities/Autentication";
 import runValidation from "../../utils/validator/runValidation";
 import { googleAuthSchema } from "../../utils/validator/schema/authSchema";
 import handleError from "../../utils/exception/handleError";
-import NotFoundError from "../../utils/exception/custom/NotFoundError";
 import BadRequestError from "../../utils/exception/custom/BadRequestError";
 import Env from "../../utils/variables/Env";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../utils/tokenize/jwt";
+import UnauthorizedError from "../../utils/exception/custom/UnauthorizedError";
 
 export default new (class AuthServices {
   private readonly customerRepository: Repository<Customer> =
     PostgreDataSource.getRepository(Customer);
+  private readonly authenticationRepository: Repository<Authentication> =
+    PostgreDataSource.getRepository(Authentication);
 
   async googleAuth(req: Request, res: Response): Promise<Response> {
     try {
@@ -43,15 +50,30 @@ export default new (class AuthServices {
 
       // Jika customer dengan email sudah terdaftar (LOGIN)
       if (customerSelected) {
-        const token = jwt.sign({ id: customerSelected.id }, Env.JWT_SECRET, {
-          expiresIn: 604800,
+        const refreshToken = await generateRefreshToken({
+          id: customerSelected.id,
         });
+        const accessToken = await generateAccessToken({
+          id: customerSelected.id,
+        });
+
+        // delete previous refresh token
+        await this.authenticationRepository.delete({
+          owner_id: customerSelected.id,
+        });
+        // add new refresh token
+        const token = new Authentication();
+        token.id = uuidv4();
+        token.owner_id = customerSelected.id;
+        token.token = refreshToken;
+        await this.authenticationRepository.save(token);
 
         return res.status(200).json({
           code: 200,
           status: "success",
           message: "Login Success",
-          token,
+          refreshToken,
+          accessToken,
         });
       }
 
@@ -64,15 +86,26 @@ export default new (class AuthServices {
       customer.profile_picture = data?.picture || "";
       await this.customerRepository.save(customer);
 
-      const token = jwt.sign({ id: customer.id }, Env.JWT_SECRET, {
-        expiresIn: 604800,
+      const refreshToken = await generateRefreshToken({
+        id: customer.id,
       });
+      const accessToken = await generateAccessToken({
+        id: customer.id,
+      });
+
+      // add new refresh token
+      const token = new Authentication();
+      token.id = uuidv4();
+      token.owner_id = customer.id;
+      token.token = refreshToken;
+      await this.authenticationRepository.save(token);
 
       return res.status(201).json({
         code: 201,
         status: "success",
         message: "Register Success",
-        token,
+        refreshToken,
+        accessToken,
       });
     } catch (error) {
       return handleError(res, error);
@@ -81,24 +114,57 @@ export default new (class AuthServices {
 
   async check(req: Request, res: Response): Promise<Response> {
     try {
-      const customerSelected: Customer | null =
-        await this.customerRepository.findOne({
-          where: {
-            id: res.locals.auth.id,
-          },
-        });
-
-      if (!customerSelected) {
-        throw new NotFoundError(
-          `Customer with ID ${res.locals.auth.id} not found`,
-          "Customer Not Found"
-        );
-      }
-
       return res.status(200).json({
         code: 200,
         status: "success",
         message: "Token Is Valid",
+      });
+    } catch (error) {
+      return handleError(res, error);
+    }
+  }
+
+  async refreshAccessToken(req: Request, res: Response): Promise<Response> {
+    try {
+      const { token } = req.params;
+      jwt.verify(token, Env.REFRESH_TOKEN_KEY);
+
+      const refreshToken = await this.authenticationRepository.findOne({
+        where: {
+          token,
+        },
+      });
+      if (!refreshToken) throw new Error();
+
+      const accessToken = await generateAccessToken({
+        id: refreshToken.owner_id,
+      });
+
+      return res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "New Access Token Generated",
+        accessToken,
+      });
+    } catch (error) {
+      return handleError(
+        res,
+        new UnauthorizedError("Refresh Token Invalid", "Access Unauthorized")
+      );
+    }
+  }
+
+  async logout(req: Request, res: Response): Promise<Response> {
+    try {
+      const { token } = req.params;
+      await this.authenticationRepository.delete({
+        token,
+      });
+
+      return res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Logout Success",
       });
     } catch (error) {
       return handleError(res, error);

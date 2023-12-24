@@ -1,17 +1,22 @@
 import { Repository } from "typeorm";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
 import { PostgreDataSource } from "../../../database/data-source";
 import { Admin } from "../../../database/entities/Admin";
+import { Authentication } from "../../../database/entities/Autentication";
 import handleError from "../../utils/exception/handleError";
 import BadRequestError from "../../utils/exception/custom/BadRequestError";
-import Env from "../../utils/variables/Env";
-import NotFoundError from "../../utils/exception/custom/NotFoundError";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../utils/tokenize/jwt";
 
 export default new (class AuthServices {
   private readonly adminRepository: Repository<Admin> =
     PostgreDataSource.getRepository(Admin);
+  private readonly authenticationRepository: Repository<Authentication> =
+    PostgreDataSource.getRepository(Authentication);
 
   async login(req: Request, res: Response): Promise<Response> {
     try {
@@ -40,40 +45,30 @@ export default new (class AuthServices {
       }
       // CHECK PASSWORD
 
-      const token = jwt.sign({ id: adminSelected.id }, Env.JWT_SECRET, {
-        expiresIn: 604800,
+      const refreshToken = await generateRefreshToken({
+        id: adminSelected.id,
       });
+      const accessToken = await generateAccessToken({
+        id: adminSelected.id,
+      });
+
+      // delete previous refresh token
+      await this.authenticationRepository.delete({
+        owner_id: adminSelected.id,
+      });
+      // add new refresh token
+      const token = new Authentication();
+      token.id = uuidv4();
+      token.owner_id = adminSelected.id;
+      token.token = refreshToken;
+      await this.authenticationRepository.save(token);
 
       return res.status(200).json({
         code: 200,
         status: "success",
         message: "Login Success",
-        token,
-      });
-    } catch (error) {
-      return handleError(res, error);
-    }
-  }
-
-  async check(req: Request, res: Response) {
-    try {
-      const adminSelected: Admin | null = await this.adminRepository.findOne({
-        where: {
-          id: res.locals.auth.id,
-        },
-      });
-
-      if (!adminSelected) {
-        throw new NotFoundError(
-          `Admin with ID ${res.locals.auth.id} not found`,
-          "Admin Not Found"
-        );
-      }
-
-      return res.status(200).json({
-        code: 200,
-        status: "success",
-        message: "Token Is Valid",
+        refreshToken,
+        accessToken,
       });
     } catch (error) {
       return handleError(res, error);

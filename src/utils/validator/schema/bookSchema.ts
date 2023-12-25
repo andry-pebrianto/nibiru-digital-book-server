@@ -9,5 +9,4 @@ export const addBookSchema = Joi.object({
     .min(1) // min ada 1 item array
     .required(),
   price: Joi.number().required(),
-  
 });

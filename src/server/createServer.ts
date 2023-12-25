@@ -11,6 +11,7 @@ import CustomerProfileRoutes from "../routes/customers/ProfileRoutes";
 import CustomerBookRoutes from "../routes/customers/BookRoutes";
 import AdminAuthRoutes from "../routes/admins/AuthRoutes";
 import AdminBookRoutes from "../routes/admins/BookRoutes";
+import AdminGenreRoutes from "../routes/admins/GenreRoutes";
 import UploadRoutes from "../routes/uploads/UploadRoutes";
 
 const createServer: Express = express();
@@ -29,6 +30,7 @@ createServer.use("/api/v1/customer/auth", CustomerAuthRoutes);
 // createServer.use("/api/v1/customer/book", CustomerBookRoutes);
 createServer.use("/api/v1/admin/auth", AdminAuthRoutes);
 // createServer.use("/api/v1/admin/book", AdminBookRoutes);
+createServer.use("/api/v1/admin/genre", AdminGenreRoutes);
 createServer.use("/api/v1/upload", UploadRoutes);
 
 createServer.use((req: Request, res: Response): Response<string> => {

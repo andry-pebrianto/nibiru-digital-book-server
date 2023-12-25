@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { PostgreDataSource } from "../../../database/data-source";
 import { Book } from "../../../database/entities/Book";
 import { Admin } from "../../../database/entities/Admin";
+import { Genre } from "../../../database/entities/Genre";
 import handleError from "../../utils/exception/handleError";
 import NotFoundError from "../../utils/exception/custom/NotFoundError";
 
@@ -12,6 +13,8 @@ export default new (class BookServices {
     PostgreDataSource.getRepository(Book);
   private readonly adminRepository: Repository<Admin> =
     PostgreDataSource.getRepository(Admin);
+  private readonly genreRepository: Repository<Genre> =
+    PostgreDataSource.getRepository(Genre);
 
   async addBook(req: Request, res: Response): Promise<Response> {
     try {
@@ -28,7 +31,20 @@ export default new (class BookServices {
         );
       }
 
-      const { title, author, synopsis, photos, price } = req.body;
+      const { title, author, synopsis, photos, price, genre } = req.body;
+
+      const genreSelected: Genre | null = await this.genreRepository.findOne({
+        where: {
+          id: genre,
+        },
+      });
+
+      if (!genreSelected) {
+        throw new NotFoundError(
+          `Genre with ID ${res.locals.auth.id} not found`,
+          "Genre Not Found"
+        );
+      }
 
       const book = new Book();
       book.id = uuidv4();
@@ -38,11 +54,12 @@ export default new (class BookServices {
       book.photos = photos;
       book.price = price;
       book.admin = adminSelected;
+      book.genre = genreSelected;
 
       await this.bookRepository.save(book);
 
-      return res.status(200).json({
-        code: 200,
+      return res.status(201).json({
+        code: 201,
         status: "success",
         message: "Add Book Success",
       });
@@ -58,6 +75,7 @@ export default new (class BookServices {
       page = page > 1 ? page : 1;
       const search =
         typeof req.query.search === "string" ? req.query.search : "";
+      const genre = typeof req.query.genre === "string" ? req.query.genre : "";
 
       const books = await this.bookRepository.find({
         where: [

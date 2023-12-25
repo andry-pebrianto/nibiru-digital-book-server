@@ -6,6 +6,7 @@ import { Admin } from "./entities/Admin";
 import { Book } from "./entities/Book";
 import { Transaction } from "./entities/Transaction";
 import { Authentication } from "./entities/Autentication";
+import { Genre } from "./entities/Genre";
 
 export const PostgreDataSource = new DataSource({
   type: "postgres",
@@ -16,7 +17,7 @@ export const PostgreDataSource = new DataSource({
   database: Env.DB_NAME,
   synchronize: Env.NODE_ENV === "prod" ? false : true,
   logging: Env.NODE_ENV === "prod" ? false : true,
-  entities: [Customer, Admin, Book, Transaction, Authentication],
+  entities: [Customer, Admin, Book, Transaction, Authentication, Genre],
   migrations: [],
   subscribers: [],
   ssl: Env.NODE_ENV === "prod" ? true : false,

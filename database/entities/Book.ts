@@ -13,6 +13,7 @@ import {
 import { Admin } from "./Admin";
 import { Customer } from "./Customer";
 import { Transaction } from "./Transaction";
+import { Genre } from "./Genre";
 
 @Entity("books")
 export class Book {
@@ -40,6 +41,13 @@ export class Book {
   })
   @JoinColumn({ name: "admin_id" }) // untuk membuat foreignkey
     admin!: Admin;
+
+  @ManyToOne(() => Genre, (genre) => genre.books, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "genre_id" }) // untuk membuat foreignkey
+    genre!: Genre;
 
   @ManyToMany(() => Customer, (customer) => customer.books_who_saved, { cascade: true })
   @JoinTable({

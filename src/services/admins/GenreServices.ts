@@ -81,28 +81,29 @@ export default new (class GenreServices {
         );
       }
 
-      const genreCheck = await this.genreRepository
-        .createQueryBuilder("genres")
-        .where("LOWER(genres.title) = LOWER(:title)", {
-          title: title.toLowerCase(),
-        })
-        .getOne();
+      if (genre.title !== title) {
+        const genreCheck = await this.genreRepository
+          .createQueryBuilder("genres")
+          .where("LOWER(genres.title) = LOWER(:title)", {
+            title: title.toLowerCase(),
+          })
+          .getOne();
 
-      if (genreCheck) {
-        throw new ConflictError(
-          `Genre ${title}, already exist`,
-          "Add Genre Failed"
-        );
+        if (genreCheck) {
+          throw new ConflictError(
+            `Genre ${title}, already exist`,
+            "Add Genre Failed"
+          );
+        }
       }
 
       genre.title = title;
-
       await this.genreRepository.save(genre);
 
-      return res.status(201).json({
-        code: 201,
+      return res.status(200).json({
+        code: 200,
         status: "success",
-        message: "Add Genre Success",
+        message: "Edit Genre Success",
       });
     } catch (error) {
       return handleError(res, error);

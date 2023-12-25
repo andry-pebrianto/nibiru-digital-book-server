@@ -79,11 +79,22 @@ export default new (class BookServices {
 
       const books = await this.bookRepository.find({
         where: [
-          { title: ILike(`%${search}%`) },
-          { author: ILike(`%${search}%`) },
+          {
+            title: ILike(`%${search}%`),
+            genre: {
+              title: genre ? genre : ILike(`%%`),
+            },
+          },
+          {
+            author: ILike(`%${search}%`),
+            genre: {
+              title: genre ? genre : ILike(`%%`),
+            },
+          },
         ],
-        take: 20,
-        skip: page * 20 - 20,
+        relations: ["genre"],
+        take: 10,
+        skip: page * 10 - 10,
         order: {
           created_at: "DESC",
         },
@@ -117,12 +128,27 @@ export default new (class BookServices {
         );
       }
 
-      const { title, author, synopsis, photos, price } = req.body;
+      const { title, author, synopsis, photos, price, genre } = req.body;
+
+      const genreSelected: Genre | null = await this.genreRepository.findOne({
+        where: {
+          id: genre,
+        },
+      });
+
+      if (!genreSelected) {
+        throw new NotFoundError(
+          `Genre with ID ${res.locals.auth.id} not found`,
+          "Genre Not Found"
+        );
+      }
+
       book.title = title;
       book.author = author;
       book.synopsis = synopsis;
       book.photos = photos;
       book.price = price;
+      book.genre = genreSelected;
 
       await this.bookRepository.save(book);
 
@@ -136,7 +162,7 @@ export default new (class BookServices {
     }
   }
 
-  async deleteBook(req: Request, res: Response): Promise<Response> {
+  async suspendBookAndOpposites(req: Request, res: Response): Promise<Response> {
     try {
       const book: Book | null = await this.bookRepository.findOne({
         where: {
@@ -151,12 +177,24 @@ export default new (class BookServices {
         );
       }
 
-      await this.bookRepository.delete(book.id);
+      if (book.active) {
+        book.active = false;
+        await this.bookRepository.save(book);
+
+        return res.status(200).json({
+          code: 200,
+          status: "success",
+          message: "Suspend Book Success",
+        });
+      }
+
+      book.active = true;
+      await this.bookRepository.save(book);
 
       return res.status(200).json({
         code: 200,
         status: "success",
-        message: "Delete Book Success",
+        message: "Cancel Suspend Book Success",
       });
     } catch (error) {
       return handleError(res, error);

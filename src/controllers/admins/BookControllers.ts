@@ -17,7 +17,7 @@ export default new (class BookControllers {
   findAllBook(req: Request, res: Response) {
     BookServices.findAllBook(req, res);
   }
-  deleteBook(req: Request, res: Response) {
-    BookServices.deleteBook(req, res);
+  suspendBookAndOpposites(req: Request, res: Response) {
+    BookServices.suspendBookAndOpposites(req, res);
   }
 })();

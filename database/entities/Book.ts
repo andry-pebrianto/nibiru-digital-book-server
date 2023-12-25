@@ -35,6 +35,9 @@ export class Book {
   @Column()
     price!: number;
 
+  @Column({ default: true })
+    active!: boolean;
+
   @ManyToOne(() => Admin, (admin) => admin.books, {
     onUpdate: "CASCADE",
     onDelete: "CASCADE",

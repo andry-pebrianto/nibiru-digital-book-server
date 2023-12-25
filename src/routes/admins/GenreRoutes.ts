@@ -4,6 +4,7 @@ import { jwtAuth } from "../../middlewares/jwtAuth";
 import { onlyAdmin } from "../../middlewares/authorization";
 
 const GenreRoutes = Router();
+GenreRoutes.get("/", jwtAuth, onlyAdmin, GenreControllers.findAllGenre);
 GenreRoutes.post("/", jwtAuth, onlyAdmin, GenreControllers.addGenre);
 GenreRoutes.put("/:genreId", jwtAuth, onlyAdmin, GenreControllers.editGenre);
 GenreRoutes.delete("/:genreId", jwtAuth, onlyAdmin, GenreControllers.deleteGenre);

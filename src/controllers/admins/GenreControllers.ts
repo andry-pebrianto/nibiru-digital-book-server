@@ -4,6 +4,9 @@ import runValidation from "../../utils/validator/runValidation";
 import { addGenreSchema } from "../../utils/validator/schema/genreSchema";
 
 export default new (class GenreControllers {
+  findAllGenre(req: Request, res: Response) {
+    GenreServices.findAllGenre(req, res);
+  }
   addGenre(req: Request, res: Response) {
     if (runValidation(req, res, addGenreSchema) === "VALID") {
       GenreServices.addGenre(req, res);

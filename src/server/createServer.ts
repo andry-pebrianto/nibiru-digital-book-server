@@ -29,7 +29,7 @@ createServer.use("/api/v1/customer/auth", CustomerAuthRoutes);
 // createServer.use("/api/v1/customer/profile", CustomerProfileRoutes);
 // createServer.use("/api/v1/customer/book", CustomerBookRoutes);
 createServer.use("/api/v1/admin/auth", AdminAuthRoutes);
-// createServer.use("/api/v1/admin/book", AdminBookRoutes);
+createServer.use("/api/v1/admin/book", AdminBookRoutes);
 createServer.use("/api/v1/admin/genre", AdminGenreRoutes);
 createServer.use("/api/v1/upload", UploadRoutes);
 

@@ -14,6 +14,21 @@ export default new (class GenreServices {
   private readonly bookRepository: Repository<Book> =
     PostgreDataSource.getRepository(Book);
 
+  async findAllGenre(req: Request, res: Response): Promise<Response> {
+    try {
+      const genres = await this.genreRepository.find();
+
+      return res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Find All Genre Success",
+        data: genres,
+      });
+    } catch (error) {
+      return handleError(res, error);
+    }
+  }
+
   async addGenre(req: Request, res: Response): Promise<Response> {
     try {
       const { title } = req.body;

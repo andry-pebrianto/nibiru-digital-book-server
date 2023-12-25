@@ -7,6 +7,6 @@ const BookRoutes = Router();
 BookRoutes.post("/", jwtAuth, onlyAdmin, BookControllers.addBook);
 BookRoutes.get("/", jwtAuth, onlyAdmin, BookControllers.findAllBook);
 BookRoutes.put("/:bookId", jwtAuth, onlyAdmin, BookControllers.editBook);
-BookRoutes.delete("/:bookId", jwtAuth, onlyAdmin, BookControllers.deleteBook);
+BookRoutes.delete("/:bookId", jwtAuth, onlyAdmin, BookControllers.suspendBookAndOpposites);
 
 export default BookRoutes;

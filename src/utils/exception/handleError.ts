@@ -7,7 +7,9 @@ const handleError = (res: Response, error: unknown): Response => {
 
   if (error instanceof ClientError) {
     console.log(error.message);
-    handleLog(error.message, user);
+    if (error.statusCode !== 401) {
+      handleLog(error.message, user);
+    }
 
     return res.status(error.statusCode).json({
       code: error.statusCode,

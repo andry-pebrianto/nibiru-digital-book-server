@@ -70,28 +70,27 @@ export default new (class BookServices {
 
   async findAllBook(req: Request, res: Response): Promise<Response> {
     try {
-      let page =
-        typeof req.query.page === "string" ? parseInt(req.query.page, 10) : 1;
+      let page = typeof req.query.page === "string" ? parseInt(req.query.page, 10) : 1;
       page = page > 1 ? page : 1;
-      const search =
-        typeof req.query.search === "string" ? req.query.search : "";
+      const search = typeof req.query.search === "string" ? req.query.search : "";
       const genre = typeof req.query.genre === "string" ? req.query.genre : "";
 
+      const whereQuery = [
+        {
+          title: ILike(`%${search}%`),
+          genre: {
+            title: genre ? genre : ILike(`%%`),
+          },
+        },
+        {
+          author: ILike(`%${search}%`),
+          genre: {
+            title: genre ? genre : ILike(`%%`),
+          },
+        },
+      ];
       const books = await this.bookRepository.find({
-        where: [
-          {
-            title: ILike(`%${search}%`),
-            genre: {
-              title: genre ? genre : ILike(`%%`),
-            },
-          },
-          {
-            author: ILike(`%${search}%`),
-            genre: {
-              title: genre ? genre : ILike(`%%`),
-            },
-          },
-        ],
+        where: whereQuery,
         relations: ["genre"],
         take: 10,
         skip: page * 10 - 10,
@@ -99,12 +98,17 @@ export default new (class BookServices {
           created_at: "DESC",
         },
       });
+      const booksCount = await this.bookRepository.count({
+        where: whereQuery,
+        relations: ["genre"],
+      });
 
       return res.status(200).json({
         code: 200,
         status: "success",
         message: "Find All Book Success",
         data: books,
+        total: booksCount,
       });
     } catch (error) {
       return handleError(res, error);
@@ -162,7 +166,10 @@ export default new (class BookServices {
     }
   }
 
-  async suspendBookAndOpposites(req: Request, res: Response): Promise<Response> {
+  async suspendBookAndOpposites(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
     try {
       const book: Book | null = await this.bookRepository.findOne({
         where: {

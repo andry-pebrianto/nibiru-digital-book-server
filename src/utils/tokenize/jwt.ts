@@ -3,7 +3,7 @@ import Env from "../variables/Env";
 
 export const generateRefreshToken = async (payload: { id: string }) => {
   const token = jwt.sign(payload, Env.REFRESH_TOKEN_KEY, {
-    expiresIn: 86000,
+    expiresIn: 604800,
   });
 
   return token;
@@ -11,7 +11,7 @@ export const generateRefreshToken = async (payload: { id: string }) => {
 
 export const generateAccessToken = async (payload: { id: string }) => {
   const token = jwt.sign(payload, Env.ACCESS_TOKEN_KEY, {
-    expiresIn: 12000,
+    expiresIn: 120,
   });
 
   return token;

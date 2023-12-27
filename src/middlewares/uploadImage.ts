@@ -45,7 +45,7 @@ export function uploadImage(req: Request, res: Response, next: NextFunction) {
   const multerFields = multerUpload.fields([
     {
       name: "image",
-      maxCount: 5,
+      maxCount: 6,
     },
   ]);
 

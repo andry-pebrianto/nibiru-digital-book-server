@@ -32,7 +32,7 @@ export default new (class BookServices {
         );
       }
 
-      const { title, author, synopsis, photos, price, genre } = req.body;
+      const { title, author, synopsis, photos, price, genre, fileUrl } = req.body;
 
       const genreSelected: Genre | null = await this.genreRepository.findOne({
         where: {
@@ -56,6 +56,7 @@ export default new (class BookServices {
       book.price = price;
       book.admin = adminSelected;
       book.genre = genreSelected;
+      book.file_url = fileUrl;
 
       await this.bookRepository.save(book);
 

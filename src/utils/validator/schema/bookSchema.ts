@@ -10,4 +10,5 @@ export const addBookSchema = Joi.object({
     .required(),
   price: Joi.number().required(),
   genre: Joi.string().required(),
+  fileUrl: Joi.string().required(),
 });

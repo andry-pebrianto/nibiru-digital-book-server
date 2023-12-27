@@ -16,6 +16,9 @@ export class Genre {
   @Column({ length: 50 })
     title!: string;
 
+  @Column({ type: "text" })
+    photo!: string;
+
   @OneToMany(() => Book, (book) => book.genre)
     books!: Book[];
 

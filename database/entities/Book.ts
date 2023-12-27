@@ -32,6 +32,9 @@ export class Book {
   @Column({ type: "text" })
     synopsis!: string;
 
+  @Column({ type: "text" })
+    file_url!: string;
+
   @Column()
     price!: number;
 

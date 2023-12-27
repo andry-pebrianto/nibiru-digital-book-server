@@ -67,7 +67,7 @@ export default new (class GenreServices {
 
   async addGenre(req: Request, res: Response): Promise<Response> {
     try {
-      const { title } = req.body;
+      const { title, photo } = req.body;
 
       const genreCheck = await this.genreRepository
         .createQueryBuilder("genres")
@@ -86,6 +86,7 @@ export default new (class GenreServices {
       const genre = new Genre();
       genre.id = uuidv4();
       genre.title = title;
+      genre.photo = photo;
 
       await this.genreRepository.save(genre);
 

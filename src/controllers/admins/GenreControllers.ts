@@ -7,6 +7,9 @@ export default new (class GenreControllers {
   findAllGenre(req: Request, res: Response) {
     GenreServices.findAllGenre(req, res);
   }
+  findOneGenre(req: Request, res: Response) {
+    GenreServices.findOneGenre(req, res);
+  }
   addGenre(req: Request, res: Response) {
     if (runValidation(req, res, addGenreSchema) === "VALID") {
       GenreServices.addGenre(req, res);

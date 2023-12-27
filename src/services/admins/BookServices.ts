@@ -7,6 +7,7 @@ import { Admin } from "../../../database/entities/Admin";
 import { Genre } from "../../../database/entities/Genre";
 import handleError from "../../utils/exception/handleError";
 import NotFoundError from "../../utils/exception/custom/NotFoundError";
+import BadRequestError from "../../utils/exception/custom/BadRequestError";
 
 export default new (class BookServices {
   private readonly bookRepository: Repository<Book> =
@@ -115,9 +116,52 @@ export default new (class BookServices {
     }
   }
 
+  async findOneBook(req: Request, res: Response): Promise<Response> {
+    try {
+      const { bookId } = req.params;
+
+      if (!/^[a-f\d]{8}-[a-f\d]{4}-4[a-f\d]{3}-[89aAbB][a-f\d]{3}-[a-f\d]{12}$/.test(bookId)) {
+        throw new BadRequestError(
+          "The sent ID is not a valid UUID format",
+          "UUID Error"
+        );
+      }
+
+      const book = await this.bookRepository.findOne({
+        where: {
+          id: bookId,
+        },
+        relations: ["genre"],
+      });
+
+      if (!book) {
+        throw new NotFoundError(
+          `Book with ID ${bookId} not found`,
+          "Book Not Found"
+        );
+      }
+
+      return res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Find Detail Book Success",
+        data: book,
+      });
+    } catch (error) {
+      return handleError(res, error);
+    }
+  }
+
   async editBook(req: Request, res: Response): Promise<Response> {
     try {
       const { bookId } = req.params;
+
+      if (!/^[a-f\d]{8}-[a-f\d]{4}-4[a-f\d]{3}-[89aAbB][a-f\d]{3}-[a-f\d]{12}$/.test(bookId)) {
+        throw new BadRequestError(
+          "The sent ID is not a valid UUID format",
+          "UUID Error"
+        );
+      }
 
       const book: Book | null = await this.bookRepository.findOne({
         where: {
@@ -166,20 +210,26 @@ export default new (class BookServices {
     }
   }
 
-  async suspendBookAndOpposites(
-    req: Request,
-    res: Response
-  ): Promise<Response> {
+  async suspendBookAndOpposites(req: Request, res: Response): Promise<Response> {
     try {
+      const { bookId } = req.params;
+
+      if (!/^[a-f\d]{8}-[a-f\d]{4}-4[a-f\d]{3}-[89aAbB][a-f\d]{3}-[a-f\d]{12}$/.test(bookId)) {
+        throw new BadRequestError(
+          "The sent ID is not a valid UUID format",
+          "UUID Error"
+        );
+      }
+
       const book: Book | null = await this.bookRepository.findOne({
         where: {
-          id: req.params.bookId,
+          id: bookId,
         },
       });
 
       if (!book) {
         throw new NotFoundError(
-          `Book with ID ${req.params.bookId} not found`,
+          `Book with ID ${bookId} not found`,
           "Book Not Found"
         );
       }

@@ -7,6 +7,7 @@ import { Book } from "../../../database/entities/Book";
 import handleError from "../../utils/exception/handleError";
 import ConflictError from "../../utils/exception/custom/ConflictError";
 import NotFoundError from "../../utils/exception/custom/NotFoundError";
+import BadRequestError from "../../utils/exception/custom/BadRequestError";
 
 export default new (class GenreServices {
   private readonly genreRepository: Repository<Genre> =
@@ -23,6 +24,41 @@ export default new (class GenreServices {
         status: "success",
         message: "Find All Genre Success",
         data: genres,
+      });
+    } catch (error) {
+      return handleError(res, error);
+    }
+  }
+
+  async findOneGenre(req: Request, res: Response): Promise<Response> {
+    try {
+      const { genreId } = req.params;
+
+      if (!/^[a-f\d]{8}-[a-f\d]{4}-4[a-f\d]{3}-[89aAbB][a-f\d]{3}-[a-f\d]{12}$/.test(genreId)) {
+        throw new BadRequestError(
+          "The sent ID is not a valid UUID format",
+          "UUID Error"
+        );
+      }
+
+      const genre = await this.genreRepository.findOne({
+        where: {
+          id: genreId,
+        },
+      });
+
+      if (!genre) {
+        throw new NotFoundError(
+          `Genre with ID ${genreId} not found`,
+          "Genre Not Found"
+        );
+      }
+
+      return res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Find Detail Genre Success",
+        data: genre,
       });
     } catch (error) {
       return handleError(res, error);
@@ -67,6 +103,13 @@ export default new (class GenreServices {
     try {
       const { genreId } = req.params;
       const { title } = req.body;
+
+      if (!/^[a-f\d]{8}-[a-f\d]{4}-4[a-f\d]{3}-[89aAbB][a-f\d]{3}-[a-f\d]{12}$/.test(genreId)) {
+        throw new BadRequestError(
+          "The sent ID is not a valid UUID format",
+          "UUID Error"
+        );
+      }
 
       const genre: Genre | null = await this.genreRepository.findOne({
         where: {
@@ -113,6 +156,13 @@ export default new (class GenreServices {
   async deleteGenre(req: Request, res: Response): Promise<Response> {
     try {
       const { genreId } = req.params;
+
+      if (!/^[a-f\d]{8}-[a-f\d]{4}-4[a-f\d]{3}-[89aAbB][a-f\d]{3}-[a-f\d]{12}$/.test(genreId)) {
+        throw new BadRequestError(
+          "The sent ID is not a valid UUID format",
+          "UUID Error"
+        );
+      }
 
       const genre: Genre | null = await this.genreRepository.findOne({
         where: {

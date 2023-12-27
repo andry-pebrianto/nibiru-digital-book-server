@@ -103,7 +103,7 @@ export default new (class GenreServices {
   async editGenre(req: Request, res: Response): Promise<Response> {
     try {
       const { genreId } = req.params;
-      const { title } = req.body;
+      const { title, photo } = req.body;
 
       if (!/^[a-f\d]{8}-[a-f\d]{4}-4[a-f\d]{3}-[89aAbB][a-f\d]{3}-[a-f\d]{12}$/.test(genreId)) {
         throw new BadRequestError(
@@ -142,6 +142,7 @@ export default new (class GenreServices {
       }
 
       genre.title = title;
+      genre.photo = photo;
       await this.genreRepository.save(genre);
 
       return res.status(200).json({

@@ -5,6 +5,7 @@ import { onlyCustomer } from "../../middlewares/authorization";
 
 const BookRoutes = Router();
 BookRoutes.get("/", jwtAuth, onlyCustomer, BookControllers.findAllBook);
+BookRoutes.get("/new", BookControllers.findNewBook);
 BookRoutes.get("/:bookId", jwtAuth, onlyCustomer, BookControllers.findOneBook);
 
 export default BookRoutes;

@@ -8,4 +8,7 @@ export default new (class BookControllers {
   findOneBook(req: Request, res: Response) {
     BookServices.findOneBook(req, res);
   }
+  findNewBook(req: Request, res: Response) {
+    BookServices.findNewBook(req, res);
+  }
 })();

@@ -80,4 +80,28 @@ export default new (class BookServices {
       return handleError(res, error);
     }
   }
+
+  async findNewBook(req: Request, res: Response): Promise<Response> {
+    try {
+      const books = await this.bookRepository.find({
+        where: {
+          active: true,
+        },
+        take: 10,
+        order: {
+          created_at: "DESC",
+        },
+        relations: ["genre"],
+      });
+
+      return res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Find New Book Success",
+        data: books,
+      });
+    } catch (error) {
+      return handleError(res, error);
+    }
+  }
 })();

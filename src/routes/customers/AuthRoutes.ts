@@ -6,6 +6,6 @@ const AuthRoutes = Router();
 AuthRoutes.post("/google-auth", AuthControllers.googleAuth);
 AuthRoutes.get("/check", jwtAuth, AuthControllers.check);
 AuthRoutes.get("/refresh/:token", AuthControllers.refreshAccessToken);
-AuthRoutes.get("/logout/:token", AuthControllers.logout);
+AuthRoutes.delete("/logout/:token", AuthControllers.logout);
 
 export default AuthRoutes;

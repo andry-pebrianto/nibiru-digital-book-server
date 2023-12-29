@@ -64,6 +64,8 @@ export default new (class BookServices {
           buyed: book.customers_who_buying
             .map((customer) => customer.id)
             .includes(res.locals.auth.id),
+          customers_who_saving: null,
+          customers_who_buying: null,
         })),
         total: booksCount,
       });
@@ -91,6 +93,7 @@ export default new (class BookServices {
         where: {
           id: bookId,
         },
+        relations: ["genre", "customers_who_saving", "customers_who_buying"],
       });
 
       if (!book) {
@@ -104,7 +107,17 @@ export default new (class BookServices {
         code: 200,
         status: "success",
         message: "Find One Book Success",
-        data: book,
+        data: {
+          ...book,
+          saved: book.customers_who_saving
+            .map((customer) => customer.id)
+            .includes(res.locals.auth.id),
+          buyed: book.customers_who_buying
+            .map((customer) => customer.id)
+            .includes(res.locals.auth.id),
+          customers_who_saving: null,
+          customers_who_buying: null,
+        },
       });
     } catch (error) {
       return handleError(res, error);

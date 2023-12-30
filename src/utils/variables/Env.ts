@@ -24,6 +24,8 @@ class Env {
   static REDIS_PORT: number = process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379;
   static REDIS_HOST: string = process.env.REDIS_HOST || "redis.com";
   static REDIS_PASSWORD: string = process.env.REDIS_PASSWORD || "secretredispw";
+  static MIDTRANS_APP_URL: string = process.env.MIDTRANS_APP_URL || "midtrans_app_url";
+  static MIDTRANS_SERVER_KEY: string = process.env.MIDTRANS_SERVER_KEY || "midtrans_server_key";
 }
 
 export default Env;

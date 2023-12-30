@@ -18,6 +18,15 @@ export class Transaction {
   @Column({ length: 20 })
     status!: string;
 
+  @Column()
+    total!: number;
+
+  @Column({ type: "text" })
+    snap_token!: string;
+
+  @Column({ type: "text" })
+    snap_redirect_url!: string;
+
   @ManyToOne(() => Customer, (customer) => customer.transactions, {
     onUpdate: "CASCADE",
     onDelete: "CASCADE",

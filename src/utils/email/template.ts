@@ -58,7 +58,7 @@ export const htmlTemplateTop = `
   </h1>
 
   <div class="auth-content" style="background-color: white;">
-    <p style="font-size: 20px;">Halo, hai hai!</p>
+    <p style="font-size: 20px;">Halo, Apa Kabar?</p>
 
     <hr>`;
 

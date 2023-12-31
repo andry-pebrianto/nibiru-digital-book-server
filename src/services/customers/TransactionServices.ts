@@ -59,6 +59,7 @@ export default new (class BookServices {
           book: {
             id: bookSelected.id,
           },
+          status: "PENDING",
         },
       });
 

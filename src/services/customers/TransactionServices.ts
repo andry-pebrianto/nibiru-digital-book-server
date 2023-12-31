@@ -10,6 +10,8 @@ import handleError from "../../utils/exception/handleError";
 import Env from "../../utils/variables/Env";
 import NotFoundError from "../../utils/exception/custom/NotFoundError";
 import BadRequestError from "../../utils/exception/custom/BadRequestError";
+import { handleLog } from "../../utils/winston/logger";
+import ConflictError from "../../utils/exception/custom/ConflictError";
 
 export default new (class BookServices {
   private readonly customerRepository: Repository<Customer> =
@@ -42,7 +44,25 @@ export default new (class BookServices {
       });
       if (!bookSelected) {
         throw new NotFoundError(
-          `Book with ID ${res.locals.auth.id} not found`,
+          `Book with ID ${bookId} not found`,
+          "Book Not Found"
+        );
+      }
+
+      const transactionCheck = await this.transactionRepository.findOne({
+        where: {
+          customer: {
+            id: customerSelected.id,
+          },
+          book: {
+            id: bookSelected.id,
+          },
+        },
+      });
+
+      if (transactionCheck) {
+        throw new ConflictError(
+          "The transaction with the book has already occurred, please complete the payment",
           "Book Not Found"
         );
       }
@@ -129,7 +149,7 @@ export default new (class BookServices {
       });
       if (!transaction) {
         throw new NotFoundError(
-          `Transaction with ID ${res.locals.auth.id} not found`,
+          `Transaction with ID ${req.params.transactionId} not found`,
           "Transaction Not Found"
         );
       }
@@ -145,21 +165,9 @@ export default new (class BookServices {
     }
   }
 
-  async transactionNotification(req: Request, res: Response): Promise<Response> {
+  transactionNotification(req: Request, res: Response): Response {
     try {
       const data = req.body;
-
-      const transaction = await this.transactionRepository.findOne({
-        where: {
-          id: data.order_id,
-        },
-      });
-      if (!transaction) {
-        throw new NotFoundError(
-          `Transaction with ID ${res.locals.auth.id} not found`,
-          "Transaction Not Found"
-        );
-      }
 
       // check signature key midtrans
       const hash = crypto
@@ -168,7 +176,6 @@ export default new (class BookServices {
           `${data.order_id}${data.status_code}${data.gross_amount}${Env.MIDTRANS_SERVER_KEY}`
         )
         .digest("hex");
-
       if (data.signature_key !== hash) {
         throw new BadRequestError(
           "Signature key invalid, please try again your action",
@@ -183,22 +190,18 @@ export default new (class BookServices {
       // update transaction tidak perlu await, karena midtrans tidak membutuhkannya
       if (transactionStatus == "capture") {
         if (fraudStatus == "accept") {
-          transaction.status = "SUCCESS";
-          this.transactionRepository.save(transaction);
+          this.updateDataAfterTransaction(data.order_id, "SUCCESS");
         }
       } else if (transactionStatus == "settlement") {
-        transaction.status = "SUCCESS";
-        this.transactionRepository.save(transaction);
+        this.updateDataAfterTransaction(data.order_id, "SUCCESS");
       } else if (
         transactionStatus == "cancel" ||
         transactionStatus == "deny" ||
         transactionStatus == "expire"
       ) {
-        transaction.status = "FAILURE";
-        this.transactionRepository.save(transaction);
+        this.updateDataAfterTransaction(data.order_id, "FAILURE");
       } else if (transactionStatus == "pending") {
-        transaction.status = "PENDING";
-        this.transactionRepository.save(transaction);
+        this.updateDataAfterTransaction(data.order_id, "PENDING");
       }
 
       return res.status(200).json({
@@ -208,6 +211,45 @@ export default new (class BookServices {
       });
     } catch (error) {
       return handleError(res, error);
+    }
+  }
+
+  async updateDataAfterTransaction(transactionId: string, transactionStatus: string) {
+    try {
+      const transaction = await this.transactionRepository.findOne({
+        relations: ["customer", "book"],
+        where: {
+          id: transactionId,
+        },
+      });
+      if (!transaction) {
+        throw new NotFoundError(
+          `Transaction with ID ${transactionId} not found`,
+          "Transaction Not Found"
+        );
+      }
+
+      transaction.status = transactionStatus;
+      await this.transactionRepository.save(transaction);
+
+      // delete from cart
+      await this.bookRepository.query(
+        "DELETE FROM carts WHERE customer_id=$1 AND book_id=$2",
+        [transaction.customer.id, transaction.book.id]
+      );
+
+      // add to collection
+      await this.bookRepository.query(
+        "INSERT INTO collections(customer_id, book_id) VALUES($1, $2)",
+        [transaction.customer.id, transaction.book.id]
+      );
+
+      console.log("ALL TRANSACTION ACTION SUCCESS");
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+        handleLog(error.message, "NO USER");
+      }
     }
   }
 })();

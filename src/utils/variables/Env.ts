@@ -26,6 +26,7 @@ class Env {
   static REDIS_PASSWORD: string = process.env.REDIS_PASSWORD || "secretredispw";
   static MIDTRANS_APP_URL: string = process.env.MIDTRANS_APP_URL || "midtrans_app_url";
   static MIDTRANS_SERVER_KEY: string = process.env.MIDTRANS_SERVER_KEY || "midtrans_server_key";
+  static FRONTEND_URL: string = process.env.FRONTEND_URL || "frontend_url";
 }
 
 export default Env;

@@ -86,6 +86,10 @@ export async function transactionOwner(
         },
       });
 
+    if (!transactionSelected) {
+      throw new Error("Transaction Not Found");
+    }
+
     if (transactionSelected?.customer.id !== res.locals.auth.id) {
       throw new Error();
     }
@@ -93,7 +97,6 @@ export async function transactionOwner(
     next();
   } catch (error) {
     console.log(error);
-
     return handleError(
       res,
       new ForbiddenError(

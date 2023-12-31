@@ -12,4 +12,7 @@ export default new (class BookControllers {
   getDetailTransaction(req: Request, res: Response) {
     TransactionServices.getDetailTransaction(req, res);
   }
+  transactionNotification(req: Request, res: Response) {
+    TransactionServices.transactionNotification(req, res);
+  }
 })();

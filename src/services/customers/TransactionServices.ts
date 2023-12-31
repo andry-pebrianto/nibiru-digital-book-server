@@ -1,6 +1,7 @@
 import { Repository } from "typeorm";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
+import crypto from "crypto";
 import { PostgreDataSource } from "../../../database/data-source";
 import { Book } from "../../../database/entities/Book";
 import { Customer } from "../../../database/entities/Customer";
@@ -55,7 +56,7 @@ export default new (class BookServices {
           order_id: transactionId,
           gross_amount: totalPrice,
         },
-        items_details: [
+        item_details: [
           {
             id: bookSelected.id,
             price: bookSelected.price,
@@ -66,6 +67,11 @@ export default new (class BookServices {
         customer_details: {
           first_name: customerSelected.fullname,
           email: customerSelected.email,
+        },
+        callbacks: {
+          finish: `/transaction/${transactionId}`,
+          error: `/transaction/${transactionId}`,
+          pending: `/transaction/${transactionId}`,
         },
       };
       const response = await fetch(
@@ -105,8 +111,7 @@ export default new (class BookServices {
         status: "success",
         message: "Create Transaction Success",
         data: {
-          snap_token: data.token,
-          snap_redirect_url: data.redirect_url,
+          transactionId,
         },
       });
     } catch (error) {
@@ -117,6 +122,7 @@ export default new (class BookServices {
   async getDetailTransaction(req: Request, res: Response): Promise<Response> {
     try {
       const transaction = await this.transactionRepository.findOne({
+        relations: ["customer", "book"],
         where: {
           id: req.params.transactionId,
         },
@@ -133,6 +139,72 @@ export default new (class BookServices {
         status: "success",
         message: "Get Detail Transaction Success",
         data: transaction,
+      });
+    } catch (error) {
+      return handleError(res, error);
+    }
+  }
+
+  async transactionNotification(req: Request, res: Response): Promise<Response> {
+    try {
+      const data = req.body;
+
+      const transaction = await this.transactionRepository.findOne({
+        where: {
+          id: data.order_id,
+        },
+      });
+      if (!transaction) {
+        throw new NotFoundError(
+          `Transaction with ID ${res.locals.auth.id} not found`,
+          "Transaction Not Found"
+        );
+      }
+
+      // check signature key midtrans
+      const hash = crypto
+        .createHash("sha512")
+        .update(
+          `${data.order_id}${data.status_code}${data.gross_amount}${Env.MIDTRANS_SERVER_KEY}`
+        )
+        .digest("hex");
+
+      if (data.signature_key !== hash) {
+        throw new BadRequestError(
+          "Signature key invalid, please try again your action",
+          "Invalid Signature Key"
+        );
+      }
+      // check signature key midtrans
+
+      const transactionStatus = data.transaction_status;
+      const fraudStatus = data.fraud_status;
+
+      // update transaction tidak perlu await, karena midtrans tidak membutuhkannya
+      if (transactionStatus == "capture") {
+        if (fraudStatus == "accept") {
+          transaction.status = "SUCCESS";
+          this.transactionRepository.save(transaction);
+        }
+      } else if (transactionStatus == "settlement") {
+        transaction.status = "SUCCESS";
+        this.transactionRepository.save(transaction);
+      } else if (
+        transactionStatus == "cancel" ||
+        transactionStatus == "deny" ||
+        transactionStatus == "expire"
+      ) {
+        transaction.status = "FAILURE";
+        this.transactionRepository.save(transaction);
+      } else if (transactionStatus == "pending") {
+        transaction.status = "PENDING";
+        this.transactionRepository.save(transaction);
+      }
+
+      return res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Transaction Notification Webhook Success",
       });
     } catch (error) {
       return handleError(res, error);

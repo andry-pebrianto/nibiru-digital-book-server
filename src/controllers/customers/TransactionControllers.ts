@@ -9,4 +9,7 @@ export default new (class BookControllers {
       TransactionServices.createTransaction(req, res);
     }
   }
+  getDetailTransaction(req: Request, res: Response) {
+    TransactionServices.getDetailTransaction(req, res);
+  }
 })();

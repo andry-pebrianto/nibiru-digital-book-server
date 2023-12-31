@@ -5,6 +5,7 @@ import ForbiddenError from "../utils/exception/custom/ForbiddenError";
 import { Admin } from "../../database/entities/Admin";
 import { PostgreDataSource } from "../../database/data-source";
 import { Customer } from "../../database/entities/Customer";
+import { Transaction } from "../../database/entities/Transaction";
 
 export async function onlyAdmin(
   req: Request,
@@ -62,6 +63,41 @@ export async function onlyCustomer(
       res,
       new ForbiddenError(
         "You don't have access to these resources (Only Customer)",
+        "Access Forbidden"
+      )
+    );
+  }
+}
+
+export async function transactionOwner(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const transactionRepository: Repository<Transaction> =
+      PostgreDataSource.getRepository(Transaction);
+
+    const transactionSelected: Transaction | null =
+      await transactionRepository.findOne({
+        relations: ["customer"],
+        where: {
+          id: req.params.transactionId,
+        },
+      });
+
+    if (transactionSelected?.customer.id !== res.locals.auth.id) {
+      throw new Error();
+    }
+
+    next();
+  } catch (error) {
+    console.log(error);
+
+    return handleError(
+      res,
+      new ForbiddenError(
+        "You don't have access to these resources (Only Customer Owner)",
         "Access Forbidden"
       )
     );

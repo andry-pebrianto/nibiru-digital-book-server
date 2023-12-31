@@ -84,7 +84,8 @@ export default new (class BookServices {
 
       if (response.status !== 201) {
         throw new BadRequestError(
-          data?.error_messages?.[0] || "Midtrans not return 201 Created, something wrong happened",
+          data?.error_messages?.[0] ||
+            "Midtrans not return 201 Created, something wrong happened",
           "Create Transaction Failed"
         );
       }
@@ -107,6 +108,31 @@ export default new (class BookServices {
           snap_token: data.token,
           snap_redirect_url: data.redirect_url,
         },
+      });
+    } catch (error) {
+      return handleError(res, error);
+    }
+  }
+
+  async getDetailTransaction(req: Request, res: Response): Promise<Response> {
+    try {
+      const transaction = await this.transactionRepository.findOne({
+        where: {
+          id: req.params.transactionId,
+        },
+      });
+      if (!transaction) {
+        throw new NotFoundError(
+          `Transaction with ID ${res.locals.auth.id} not found`,
+          "Transaction Not Found"
+        );
+      }
+
+      return res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Get Detail Transaction Success",
+        data: transaction,
       });
     } catch (error) {
       return handleError(res, error);

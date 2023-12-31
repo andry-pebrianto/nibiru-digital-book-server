@@ -12,6 +12,8 @@ import NotFoundError from "../../utils/exception/custom/NotFoundError";
 import BadRequestError from "../../utils/exception/custom/BadRequestError";
 import { handleLog } from "../../utils/winston/logger";
 import ConflictError from "../../utils/exception/custom/ConflictError";
+import { bookPurchased } from "../../utils/email/bookPurchased";
+import { sendEmail } from "../../utils/email/sendEmail";
 
 export default new (class BookServices {
   private readonly customerRepository: Repository<Customer> =
@@ -243,6 +245,17 @@ export default new (class BookServices {
         "INSERT INTO collections(customer_id, book_id) VALUES($1, $2)",
         [transaction.customer.id, transaction.book.id]
       );
+
+      const templateEmail = {
+        from: `"Nibiru Digital Book" <${Env.EMAIL_FROM}>`,
+        to: transaction.customer.email.toLowerCase(),
+        subject: "Thanks For Your Transaction",
+        html: bookPurchased({
+          link: transaction.book.file_url,
+          bookTitle: transaction.book.title,
+        }),
+      };
+      sendEmail(templateEmail);
 
       console.log("ALL TRANSACTION ACTION SUCCESS");
     } catch (error) {

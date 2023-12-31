@@ -13,7 +13,7 @@ const logger = winston.createLogger({
 });
 
 export function handleLog(error: string, user: string): void {
-  logger.error({ error, date: new Date().getTime(), user });
+  logger.error({ error, date: new Date(), user });
 }
 
 export default logger;

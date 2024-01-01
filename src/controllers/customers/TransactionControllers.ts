@@ -15,4 +15,7 @@ export default new (class BookControllers {
   transactionNotification(req: Request, res: Response) {
     TransactionServices.transactionNotification(req, res);
   }
+  getAllMyTransaction(req: Request, res: Response) {
+    TransactionServices.getAllMyTransaction(req, res);
+  }
 })();

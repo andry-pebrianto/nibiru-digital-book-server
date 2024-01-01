@@ -266,4 +266,29 @@ export default new (class BookServices {
       }
     }
   }
+
+  async getAllMyTransaction(req: Request, res: Response): Promise<Response> {
+    try {
+      const transactions = await this.transactionRepository.find({
+        where: {
+          customer: {
+            id: res.locals.auth.id,
+          }
+        },
+        relations: ["customer"],
+        order: {
+          created_at: "DESC",
+        },
+      });
+
+      return res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Get All My Transaction Success",
+        data: transactions,
+      });
+    } catch (error) {
+      return handleError(res, error);
+    }
+  }
 })();

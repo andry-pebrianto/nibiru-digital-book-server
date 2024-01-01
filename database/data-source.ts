@@ -7,6 +7,7 @@ import { Book } from "./entities/Book";
 import { Transaction } from "./entities/Transaction";
 import { Authentication } from "./entities/Autentication";
 import { Genre } from "./entities/Genre";
+import { MigrationFile1704096593432 } from "./migration/1704096593432-MigrationFile";
 
 export const PostgreDataSource = new DataSource({
   type: "postgres",
@@ -18,7 +19,7 @@ export const PostgreDataSource = new DataSource({
   synchronize: Env.NODE_ENV === "prod" ? false : true,
   logging: Env.NODE_ENV === "prod" ? false : true,
   entities: [Customer, Admin, Book, Transaction, Authentication, Genre],
-  migrations: [],
+  migrations: [MigrationFile1704096593432],
   subscribers: [],
   ssl: Env.NODE_ENV === "prod" ? true : false,
 });

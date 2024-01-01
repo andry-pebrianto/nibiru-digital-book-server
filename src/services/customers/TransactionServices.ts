@@ -14,6 +14,7 @@ import { handleLog } from "../../utils/winston/logger";
 import ConflictError from "../../utils/exception/custom/ConflictError";
 import { bookPurchased } from "../../utils/email/bookPurchased";
 import { sendEmail } from "../../utils/email/sendEmail";
+import axios from "axios";
 
 export default new (class BookServices {
   private readonly customerRepository: Repository<Customer> =
@@ -97,23 +98,21 @@ export default new (class BookServices {
           pending: `/transaction/${transactionId}`,
         },
       };
-      const response = await fetch(
+      const response = await axios.post(
         `${Env.MIDTRANS_APP_URL}/snap/v1/transactions`,
+        payload,
         {
-          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
             Authorization: `Basic ${btoa(`${Env.MIDTRANS_SERVER_KEY}:`)}`,
           },
-          body: JSON.stringify(payload),
         }
       );
-      const data = await response.json();
 
       if (response.status !== 201) {
         throw new BadRequestError(
-          data?.error_messages?.[0] ||
+          response?.data?.error_messages?.[0] ||
             "Midtrans not return 201 Created, something wrong happened",
           "Create Transaction Failed"
         );
@@ -125,8 +124,8 @@ export default new (class BookServices {
       transaction.customer = customerSelected;
       transaction.status = "PENDING";
       transaction.total = totalPrice;
-      transaction.snap_token = data.token;
-      transaction.snap_redirect_url = data.redirect_url;
+      transaction.snap_token = response?.data?.token;
+      transaction.snap_redirect_url = response?.data?.redirect_url;
       await this.transactionRepository.save(transaction);
 
       return res.status(201).json({

@@ -221,4 +221,25 @@ export default new (class BookServices {
       return handleError(res, error);
     }
   }
+
+  async findMyBookCollection(req: Request, res: Response): Promise<Response> {
+    try {
+      const bookCollection = await this.bookRepository.find({
+        where: {
+          customers_who_buying: {
+            id: res.locals.auth.id,
+          },
+        },
+      });
+
+      return res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Find My Book Collection Success",
+        data: bookCollection,
+      });
+    } catch (error) {
+      return handleError(res, error);
+    }
+  }
 })();

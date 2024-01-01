@@ -14,4 +14,7 @@ export default new (class BookControllers {
   addToCartAndOpposite(req: Request, res: Response) {
     BookServices.addToCartAndOpposite(req, res);
   }
+  findMyBookCollection(req: Request, res: Response) {
+    BookServices.findMyBookCollection(req, res);
+  }
 })();

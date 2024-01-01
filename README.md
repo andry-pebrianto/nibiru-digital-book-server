@@ -13,7 +13,6 @@ This is a Restful API repository for Nibiru Digital Book. This Restful API is bu
 - [JWT](https://jwt.io/)
 - [Bcrypt](https://www.npmjs.com/package/bcrypt)
 - [Cloudinary](https://cloudinary.com/)
-- [Redis](https://redis.io/)
 - [Google APIs](https://github.com/googleapis/google-api-nodejs-client)
 - [Google Auth Library](https://www.npmjs.com/package/google-auth-library)
 - [Nodemailer](https://nodemailer.com/about/)

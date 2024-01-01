@@ -274,7 +274,7 @@ export default new (class BookServices {
             id: res.locals.auth.id,
           }
         },
-        relations: ["customer"],
+        relations: ["customer", "book"],
         order: {
           created_at: "DESC",
         },

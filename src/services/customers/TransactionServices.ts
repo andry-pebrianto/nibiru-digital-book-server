@@ -202,8 +202,6 @@ export default new (class BookServices {
         transactionStatus == "expire"
       ) {
         this.updateDataAfterTransaction(data.order_id, "FAILURE");
-      } else if (transactionStatus == "pending") {
-        this.updateDataAfterTransaction(data.order_id, "PENDING");
       }
 
       return res.status(200).json({

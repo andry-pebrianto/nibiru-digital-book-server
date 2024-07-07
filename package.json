@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/app.ts",
+    "try": "nodemon asw.ts",
     "start": "node dist/src/app.js",
     "migrate:generate": "npx typeorm-ts-node-commonjs migration:generate -d database/data-source.ts database/migration/MigrationFile",
     "migrate:up": "npx typeorm-ts-node-commonjs migration:run -d database/data-source.ts",

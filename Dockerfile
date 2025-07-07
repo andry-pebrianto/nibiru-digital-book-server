@@ -3,5 +3,5 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run compile
+RUN NODE_OPTIONS="--max-old-space-size=4096" npm run compile
 EXPOSE 3002

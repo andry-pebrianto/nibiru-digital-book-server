@@ -16,7 +16,7 @@ This is a Restful API repository for Nibiru Digital Book. This Restful API is bu
 - [Google APIs](https://github.com/googleapis/google-api-nodejs-client)
 - [Google Auth Library](https://www.npmjs.com/package/google-auth-library)
 - [Nodemailer](https://nodemailer.com/about/)
-- [Winston](https://www.npmjs.com/package/winston)
+- [Winston](https://www.npmjs.com/package/winston) 
 
 ## Getting Started
 

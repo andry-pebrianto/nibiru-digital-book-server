@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  nibiru-digital-book-server:
+    build:
+      context: .
+    container_name: nibiru-digital-book-server-container
+    restart: always
+    expose:
+      - 3002
+    env_file:
+      - .env
+    command: sh -c "npm run migrate:up && npm run start"
+    networks:
+      - global
+
+networks:
+  global:
+    external: true

@@ -14,6 +14,7 @@ import AdminAuthRoutes from "../routes/admins/AuthRoutes";
 import AdminBookRoutes from "../routes/admins/BookRoutes";
 import AdminGenreRoutes from "../routes/admins/GenreRoutes";
 import UploadRoutes from "../routes/uploads/UploadRoutes";
+import Env from "../utils/variables/Env";
 
 const createServer: Express = express();
 
@@ -22,7 +23,7 @@ createServer.use(helmet());
 createServer.use(cors());
 
 createServer.get("/", (req: Request, res: Response): Response<string> => {
-  return res.status(200).send("Server Online!");
+  return res.status(200).send(`Server Online - ${Env.NODE_ENV}`);
 });
 
 createServer.use("/api/v1/api-docs", swaggerUi.serve, swaggerUi.setup(apiSpec));

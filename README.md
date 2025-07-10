@@ -23,7 +23,7 @@ This is a Restful API repository for Nibiru Digital Book. This Restful API is bu
 ### Installation
 
 - Clone this project with `https://github.com/andry-pebrianto/nibiru-digital-book-server.git`
-- Install package required with `yarn`
+- Install package required with `npm install`
 - Setting .env
 
 ```bash
@@ -54,11 +54,11 @@ MIDTRANS_SERVER_KEY=
 FRONT_END_URL=
 ```
 
-- Migrate database using `yarn run migrate:up`
+- Migrate database using `npm run migrate:up`
 
 ### Executing program
 
-- Run program with `yarn run dev` for development and `yarn run start` for production (must be compiled first with `yarn run compile`)
+- Run program with `npm run dev` for development and `npm run start` for production (must be compiled first with `npm run compile`)
 
 <!-- RELATED PROJECT -->
 

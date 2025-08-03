@@ -13,8 +13,10 @@ import BadRequestError from "../../utils/exception/custom/BadRequestError";
 import { handleLog } from "../../utils/winston/logger";
 import ConflictError from "../../utils/exception/custom/ConflictError";
 import { bookPurchased } from "../../utils/email/bookPurchased";
-import { sendEmail } from "../../utils/email/sendEmail";
 import axios from "axios";
+const { Resend } = require("resend");
+
+const resend = new Resend(Env.RESEND_API_KEY);
 
 export default new (class BookServices {
   private readonly customerRepository: Repository<Customer> =
@@ -113,7 +115,7 @@ export default new (class BookServices {
       if (response.status !== 201) {
         throw new BadRequestError(
           response?.data?.error_messages?.[0] ||
-            "Midtrans not return 201 Created, something wrong happened",
+          "Midtrans not return 201 Created, something wrong happened",
           "Create Transaction Failed"
         );
       }
@@ -240,15 +242,15 @@ export default new (class BookServices {
         [transaction.customer.id, transaction.book.id]
       );
 
-      if(transactionStatus === "SUCCESS") {
+      if (transactionStatus === "SUCCESS") {
         // add to collection
         await this.bookRepository.query(
           "INSERT INTO collections(customer_id, book_id) VALUES($1, $2)",
           [transaction.customer.id, transaction.book.id]
         );
-  
+
         const templateEmail = {
-          from: `"Nibiru Digital Book" <${Env.EMAIL_FROM}>`,
+          from: `${Env.APP_NAME} <${Env.EMAIL_FROM}>`,
           to: transaction.customer.email.toLowerCase(),
           subject: "Thanks For Your Transaction",
           html: bookPurchased({
@@ -256,7 +258,8 @@ export default new (class BookServices {
             bookTitle: transaction.book.title,
           }),
         };
-        sendEmail(templateEmail);
+        const result = await resend.emails.send(templateEmail);
+        console.log(result);
       }
 
       console.log("ALL TRANSACTION ACTION SUCCESS");

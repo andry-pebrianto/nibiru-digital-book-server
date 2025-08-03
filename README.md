@@ -23,35 +23,34 @@ This is a Restful API repository for Nibiru Digital Book. This Restful API is bu
 ### Installation
 
 - Clone this project with `https://github.com/andry-pebrianto/nibiru-digital-book-server.git`
-- Install package required with `yarn`
+- Install package required with `npm install`
 - Setting .env
 
 ```bash
+APP_NAME=
 NODE_ENV=
 PORT=
-
 DB_HOST=
 DB_PORT=
 DB_USERNAME=
 DB_PASSWORD=
 DB_NAME=
-
-JWT_SECRET=
-
 EMAIL_FROM=
 EMAIL_USER=
 GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-REDIRECT_URI=
-GMAIL_REFRESH_TOKEN=
-
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
-
 MIDTRANS_APP_URL=
 MIDTRANS_SERVER_KEY=
 FRONT_END_URL=
+REFRESH_TOKEN_KEY=
+ACCESS_TOKEN_KEY=
+RESEND_API_KEY=
+VIRTUAL_HOST=
+LETSENCRYPT_HOST=
+LETSENCRYPT_EMAIL=
+MAX_OLD_SPACE_SIZE=
 ```
 
 - Migrate database using `yarn run migrate:up`

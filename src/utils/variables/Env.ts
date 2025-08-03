@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 class Env {
+  static APP_NAME: string = process.env.APP_NAME || "My App";
   static NODE_ENV: string = process.env.NODE_ENV || "prod";
   static PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 5000;
   static DB_HOST: string = process.env.DB_HOST || "localhost";
@@ -15,15 +16,17 @@ class Env {
   static EMAIL_FROM: string = process.env.EMAIL_FROM || "myemail@mail.com";
   static EMAIL_USER: string = process.env.EMAIL_USER || "myemail@mail.com";
   static GOOGLE_CLIENT_ID: string = process.env.GOOGLE_CLIENT_ID || "test";
-  static GOOGLE_CLIENT_SECRET: string = process.env.GOOGLE_CLIENT_SECRET || "test";
-  static REDIRECT_URI: string = process.env.REDIRECT_URI || "test";
-  static GMAIL_REFRESH_TOKEN: string = process.env.GMAIL_REFRESH_TOKEN || "test";
   static CLOUDINARY_CLOUD_NAME: string = process.env.CLOUDINARY_CLOUD_NAME || "cludinary_cloud_name";
   static CLOUDINARY_API_KEY: string = process.env.CLOUDINARY_API_KEY || "cludinary_api_key";
   static CLOUDINARY_API_SECRET: string = process.env.CLOUDINARY_API_SECRET || "cludinary_api_secret";
   static MIDTRANS_APP_URL: string = process.env.MIDTRANS_APP_URL || "midtrans_app_url";
   static MIDTRANS_SERVER_KEY: string = process.env.MIDTRANS_SERVER_KEY || "midtrans_server_key";
   static FRONTEND_URL: string = process.env.FRONTEND_URL || "frontend_url";
+  static RESEND_API_KEY: string = process.env.RESEND_API_KEY || "";
+  static VIRTUAL_HOST: string = process.env.VIRTUAL_HOST || "";
+  static LETSENCRYPT_HOST: string = process.env.LETSENCRYPT_HOST || "";
+  static LETSENCRYPT_EMAIL: string = process.env.LETSENCRYPT_EMAIL || "";
+  static MAX_OLD_SPACE_SIZE: string = process.env.MAX_OLD_SPACE_SIZE || "";
 }
 
 export default Env;
